@@ -1,4 +1,4 @@
-package com.example.API.de.Mesa.de.Ayuda.model;
+package com.example.helpdesk.model.enums;
 
 public enum Estado {
     ABIERTO,

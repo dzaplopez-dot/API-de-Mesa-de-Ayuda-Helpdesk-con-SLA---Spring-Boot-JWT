@@ -1,5 +1,6 @@
-package com.example.API.de.Mesa.de.Ayuda.model;
+package com.example.helpdesk.model.entity;  // ← Package correcto
 
+import com.example.helpdesk.model.enums.Rol;  // ← Import correcto
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +12,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,64 +21,54 @@ import java.util.List;
 @Entity
 @Table(name = "usuarios")
 public class Usuario implements UserDetails {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
-    
+
     @NotBlank(message = "El email es obligatorio")
     @Email(message = "El email debe tener un formato válido")
     @Column(unique = true, nullable = false)
     private String email;
-    
+
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
-    
+
     @Enumerated(EnumType.STRING)
-    private Role rol = Role.USUARIO;
-    
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-    
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-    
+    private Rol rol = Rol.USUARIO;  // ← Cambiado de Role a Rol
+
+    // Métodos de UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + rol.name()));
     }
-    
+
     @Override
     public String getUsername() {
-        return email;
+        return email;  // Usamos email como username
     }
-    
+
     @Override
-    public String getPassword() {
-        return password;
+    public boolean isAccountNonExpired() {
+        return true;
     }
-    
+
     @Override
-    public boolean isAccountNonExpired() { return true; }
-    
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
     @Override
-    public boolean isAccountNonLocked() { return true; }
-    
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
     @Override
-    public boolean isCredentialsNonExpired() { return true; }
-    
-    @Override
-    public boolean isEnabled() { return true; }
+    public boolean isEnabled() {
+        return true;
+    }
 }
