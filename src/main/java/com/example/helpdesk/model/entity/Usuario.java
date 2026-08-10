@@ -1,6 +1,6 @@
-package com.example.helpdesk.model.entity;  // ← Package correcto
+package com.example.helpdesk.model.entity;
 
-import com.example.helpdesk.model.enums.Rol;  // ← Import correcto
+import com.example.helpdesk.model.enums.Rol;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -39,17 +39,21 @@ public class Usuario implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Rol rol = Rol.USUARIO;  // ← Cambiado de Role a Rol
+    private Rol rol = Rol.USUARIO;
 
-    // Métodos de UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + rol.name()));
     }
 
     @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
     public String getUsername() {
-        return email;  // Usamos email como username
+        return email;
     }
 
     @Override
